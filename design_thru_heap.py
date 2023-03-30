@@ -45,7 +45,10 @@ class MinHeap:
     Methods
     -------
     peek() -> int
-        Returns the minimum value in the heap and removes it from the heap.
+        Returns min value in the heap.
+
+    remove(node_i: NodeIndex=0) -> int
+        Returns the node at index `node_i` in the heap and removes it from the heap.
 
     insert(node: int) -> None
         Inserts a node into the heap.
@@ -77,27 +80,37 @@ class MinHeap:
 
     def peek(self) -> int:
         """
-        Returns the minimum value in the heap and removes it from the heap.
+        Returns the root node.
+
+        Returns
+        -------
+        root_node : int
+        """
+        root_node = self.heap[0]
+        return root_node
+
+    def remove(self, node_i: NodeIndex=0) -> int:
+        """
+        Returns the node at index `node_i` in the heap and removes it from the heap.
         Modifies the `self.heap` instance variable in place.
 
         Returns
         -------
-        min_heap_value : int
+        removed_node : int
         """
 
         # Swap first and last node.
-        first_node_i = 0
         last_node_i = len(self.heap) - 1
-        self.heap[first_node_i], self.heap[last_node_i] = (
+        self.heap[node_i], self.heap[last_node_i] = (
             self.heap[last_node_i],
-            self.heap[first_node_i],
+            self.heap[node_i],
         )
 
-        min_heap_value = self.heap.pop()
+        removed_node = self.heap.pop()
         # We modify the heap in place.
-        self._sift_down(parent_i=0)
+        self._sift_down(parent_i=node_i)
 
-        return min_heap_value
+        return removed_node
 
     def insert(self, node: int) -> None:
         """
@@ -211,7 +224,17 @@ class TestMinHeap(unittest.TestCase):
     def test_peek(self):
         heap = MinHeap([3, 2, 1, 4, 5])
         self.assertEqual(heap.peek(), 1)
+
+    def test_remove_1(self):
+        heap = MinHeap([3, 2, 1, 4, 5])
+        self.assertEqual(heap.remove(), 1)
         self.assertEqual(heap.heap, [2, 4, 3, 5])
+
+    def test_remove_2(self):
+        heap = MinHeap([3, 2, 1, 4, 5])
+        print(heap.heap)
+        self.assertEqual(heap.remove(node_i=2), 3)
+        self.assertEqual(heap.heap, [1, 2, 5, 4])
 
     def test_insert(self):
         heap = MinHeap([3, 2, 1, 4, 5])
